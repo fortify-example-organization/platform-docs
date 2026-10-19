@@ -3,33 +3,13 @@
 ## Minimal Setup
 
 1. Initialize Docusaurus in a publishing repository or docs site branch.
-2. Copy this `platform-docs/` content into the Docusaurus `docs` directory.
-3. Copy `platform-docs/docusaurus/sidebars.js` to the site root as `sidebars.js`.
+2. Copy this repository's content into the Docusaurus `docs` directory.
+3. Copy `docusaurus/sidebars.js` to the site root as `sidebars.js`.
 4. Configure navbar and docs route in `docusaurus.config.js`.
 
 ## Run and Preview Locally
 
-Quickest path from repository root:
-
-```powershell
-.\scripts\preview-platform-docs.ps1 -Mode start
-```
-
-Other modes:
-
-```powershell
-.\scripts\preview-platform-docs.ps1 -Mode prepare
-.\scripts\preview-platform-docs.ps1 -Mode build
-.\scripts\preview-platform-docs.ps1 -Mode serve -Port 3001
-.\scripts\preview-platform-docs.ps1 -Mode start -OpenBrowser
-.\scripts\preview-platform-docs.ps1 -Mode clean
-```
-
-By default, this script creates a transient Docusaurus scaffold under `.tmp/platform-docs-site`, syncs `platform-docs` content, and runs the requested mode.
-
-Manual equivalent:
-
-From repository root:
+From the parent directory of this repository:
 
 ```bash
 npx create-docusaurus@latest security-docs classic
@@ -52,22 +32,12 @@ npm run serve
 
 If `npm run start` fails, run `npm run build` to get actionable validation output.
 
-## Suggested Command Sequence
-
-```bash
-npx create-docusaurus@latest security-docs classic
-cd security-docs
-# replace generated docs with this repo's platform-docs content
-npm install
-npm run start
-```
-
 ## CI Workflows In This Repository
 
-Two workflows are provided under the platform-docs subtree so they are published to the split `platform-docs` repository by `publish-platform-directories.ps1`:
+Two workflows build and publish this content automatically; no local scaffold needs to be committed because each workflow generates a transient Docusaurus site at runtime:
 
-- GitHub Pages deployment: `platform-docs/.github/workflows/publish-platform-docs-pages.yml`
-- GHES-friendly static branch publish: `platform-docs/.github/workflows/publish-platform-docs-static-branch.yml`
+- GitHub Pages deployment: [.github/workflows/publish-platform-docs-pages.yml](../.github/workflows/publish-platform-docs-pages.yml)
+- GHES-friendly static branch publish: [.github/workflows/publish-platform-docs-static-branch.yml](../.github/workflows/publish-platform-docs-static-branch.yml)
 
 ### 1) GitHub.com Pages Flow
 

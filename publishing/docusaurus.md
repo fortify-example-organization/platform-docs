@@ -19,6 +19,28 @@ cp -R ../platform-docs/* docs/
 rm -rf docs/docusaurus docs/.github
 cp ../platform-docs/docusaurus/sidebars.js ./sidebars.js
 npm ci
+```
+
+The scaffold's default `docusaurus.config.js` still points its navbar at the
+sample `tutorialSidebar` id from the generated starter docs, but
+`sidebars.js` from this repo only defines a `docs` sidebar id. Starting the
+dev server without fixing this crashes with:
+
+```
+Error: Can't find any sidebar with id "tutorialSidebar" in version current.
+Available sidebar ids are:
+- docs
+```
+
+Fix it before starting the server:
+
+```bash
+sed -i '' "s/sidebarId: 'tutorialSidebar',/sidebarId: 'docs',/" docusaurus.config.js
+```
+
+(On Linux, drop the empty `''` after `-i`.) Then start the dev server:
+
+```bash
 npm run start
 ```
 
@@ -34,7 +56,7 @@ If `npm run start` fails, run `npm run build` to get actionable validation outpu
 
 ## CI Workflows In This Repository
 
-Two workflows build and publish this content automatically; no local scaffold needs to be committed because each workflow generates a transient Docusaurus site at runtime:
+Two workflows build and publish this content automatically; no local scaffold needs to be committed because each workflow generates a transient Docusaurus site at runtime. Unlike the local preview above, these workflows are not affected by the `tutorialSidebar` issue because they generate their own `docusaurus.config.js` with `sidebarId: 'docs'` already set correctly:
 
 - GitHub Pages deployment: [.github/workflows/publish-platform-docs-pages.yml](../.github/workflows/publish-platform-docs-pages.yml)
 - GHES-friendly static branch publish: [.github/workflows/publish-platform-docs-static-branch.yml](../.github/workflows/publish-platform-docs-static-branch.yml)

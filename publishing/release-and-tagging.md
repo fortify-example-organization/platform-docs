@@ -1,6 +1,9 @@
 # Release And Tagging Runbook
 
-Use this runbook after publishing updates from the source monorepo to split repositories.
+Use this runbook to cut a release directly in a standalone platform repository
+(for example `platform-workflows`, `platform-actions`, `platform-governance`,
+or `platform-docs`). These repositories are the source of truth for their own
+content; there is no monorepo subtree-publish step.
 
 ## Why This Matters
 
@@ -12,32 +15,10 @@ Reusable workflow callers usually reference a major tag such as `@v1`.
 
 ## Prerequisites
 
-1. Changes are committed in source repository.
-2. Split repositories have been updated by subtree publish.
-3. You have permission to push tags on target repository.
+1. Changes are committed and merged to `main` in the target repository.
+2. You have permission to push tags on the target repository.
 
-## Step 1: Commit Source Changes
-
-From source monorepo root:
-
-```powershell
-git add .
-git commit -m "Update reusable workflows and docs"
-```
-
-## Step 2: Publish Split Repositories
-
-```powershell
-.\scripts\publish-platform-directories.ps1 -Org <org> -SourceRef main -UseHttps
-```
-
-For GitHub Enterprise Server:
-
-```powershell
-.\scripts\publish-platform-directories.ps1 -Org <org> -SourceRef main -UseHttps -RepoHost <ghes-host>
-```
-
-## Step 3: Prepare Target Repository Locally
+## Step 1: Prepare Target Repository Locally
 
 GitHub.com example (`platform-workflows`):
 
@@ -56,7 +37,7 @@ GHES example:
 git clone https://<ghes-host>/<org>/platform-workflows.git
 ```
 
-## Step 4: Create Immutable Release Tag
+## Step 2: Create Immutable Release Tag
 
 Example with `v1.1.0`:
 
@@ -65,7 +46,7 @@ git tag -a v1.1.0 -m "platform-workflows v1.1.0"
 git push origin v1.1.0
 ```
 
-## Step 5: Move Major Alias Tag
+## Step 3: Move Major Alias Tag
 
 Move `v1` to latest release commit:
 
@@ -74,7 +55,7 @@ git tag -fa v1 -m "Move v1 to v1.1.0"
 git push origin v1 --force
 ```
 
-## Step 6: Verify Tag References
+## Step 4: Verify Tag References
 
 GitHub.com:
 
@@ -90,7 +71,7 @@ git ls-remote --tags https://<ghes-host>/<org>/platform-workflows.git
 
 ## Consumer Impact
 
-- Repositories using `@v1` get updates after Step 5.
+- Repositories using `@v1` get updates after Step 3.
 - Repositories pinned to exact tags (for example `@v1.0.0`) do not update automatically.
 
 ## Recommended Policy
